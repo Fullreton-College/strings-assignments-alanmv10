@@ -1,13 +1,43 @@
 #include <iostream>
 #include <fstream>
 #include <string>
-#include <sstream> // For parsing lines
+#include <sstream>
 using namespace std;
 
-void parseCSV(const string&);
+void parseCSV(const string& filename)
+{
+    ifstream inputFile(filename);
 
-int main() {
-   parseCSV("students.csv");
+    if (!inputFile)
+    {
+        cout << "Error: Could not open file \"" << filename << "\"" << endl;
+        return;
+    }
 
-   return 0;
+    string line;
+
+    while (getline(inputFile, line))
+    {
+        stringstream ss(line);
+        string field;
+
+        while (getline(ss, field, ','))
+        {
+            int colonPos = field.find(':');
+            string key   = field.substr(0, colonPos);
+            string value = field.substr(colonPos + 1);
+
+            cout << key << ": " << value << endl;
+        }
+
+        cout << endl;  
+    }
+
+    inputFile.close();
+}
+
+int main()
+{
+    parseCSV("students.csv");
+    return 0;
 }
